@@ -32,9 +32,11 @@ __utimensat64_helper (int fd, const char *file,
 # ifndef __NR_utimensat_time64
 #  define __NR_utimensat_time64 __NR_utimensat
 # endif
+  printf("utimensat64 TIME64 file=%s tsp64=[%ld %ld %ld %ld] flags=%d\n", file, tsp64[0].tv_sec, tsp64[0].tv_nsec, tsp64[1].tv_sec, tsp64[1].tv_nsec, flags);
   return INLINE_SYSCALL (utimensat_time64, 4, fd, file, &tsp64[0], flags);
 #else
 # ifdef __NR_utimensat_time64
+  printf("utimensat64 file=%s tsp64=[%ld %ld %ld %ld] flags=%d\n", file, tsp64[0].tv_sec, tsp64[0].tv_nsec, tsp64[1].tv_sec, tsp64[1].tv_nsec, flags);
   int ret = INLINE_SYSCALL (utimensat_time64, 4, fd, file, &tsp64[0], flags);
   if (ret == 0 || errno != ENOSYS)
     return ret;
@@ -53,7 +55,7 @@ __utimensat64_helper (int fd, const char *file,
       tsp32[0] = valid_timespec64_to_timespec (tsp64[0]);
       tsp32[1] = valid_timespec64_to_timespec (tsp64[1]);
     }
-
+  printf("utimensat file=%s tsp32=[%ld %ld %ld %ld] flags=%d\n", file, tsp32[0].tv_sec, tsp32[0].tv_nsec, tsp32[1].tv_sec, tsp32[1].tv_nsec, flags);
   return INLINE_SYSCALL (utimensat, 4, fd, file, tsp64 ? &tsp32[0] : NULL,
                          flags);
 #endif
